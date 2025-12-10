@@ -39,4 +39,30 @@ class TicketController extends Controller
             'ticket' => $ticket
         ], 201);
     }
+
+    public function myTickets(Request $request)
+    {
+        $tickets = $request->user()->tickets()->with('event')->get();
+        return response()->json($tickets);
+    }
+
+    public function getEventTickets(Event $event)
+    {
+        $tickets = $event->tickets()->with('user')->get();
+        return response()->json($tickets);
+    }
+
+    public function downloadPdf(Ticket $ticket)
+    {
+        $user = auth()->user();
+
+        // Authorization check
+        if ($user->id !== $ticket->user_id && $user->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('tickets.pdf', compact('ticket'));
+
+        return $pdf->download('ticket-' . $ticket->unique_code . '.pdf');
+    }
 }

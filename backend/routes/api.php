@@ -34,6 +34,7 @@ use App\Http\Controllers\NewsletterController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/events', [EventController::class, 'index']);
+Route::get('/events/{event}', [EventController::class, 'show']);
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe']);
 
 use App\Http\Controllers\TicketController;
@@ -46,6 +47,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::post('/tickets/purchase', [TicketController::class, 'purchase']);
+    Route::get('/my-tickets', [TicketController::class, 'myTickets']);
+    Route::get('/tickets/{ticket}/pdf', [TicketController::class, 'downloadPdf']);
 
     // Admin routes
     Route::group(['middleware' => ['is_admin']], function () {
@@ -57,5 +60,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/admin/test', function () {
             return response()->json(['message' => 'Admin access granted']);
         });
+
+        Route::get('/admin/subscribers', [NewsletterController::class, 'index']);
+        Route::get('/events/{event}/tickets', [TicketController::class, 'getEventTickets']);
     });
 });

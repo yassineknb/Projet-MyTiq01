@@ -25,6 +25,8 @@ class AuthController extends Controller
             'role' => 'user', // Default role
         ]);
 
+        \App\Events\UserRegistered::dispatch($user);
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([

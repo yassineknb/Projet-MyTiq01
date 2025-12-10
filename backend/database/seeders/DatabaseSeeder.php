@@ -7,16 +7,36 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
+
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        // Create Admin User
+        \App\Models\User::factory()->create([
+            'name' => 'Admin User',
+            'email' => 'admin@mytiQ.com',
+            'password' => bcrypt('password'),
+            'role' => 'admin',
+        ]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // Create Regular User
+        \App\Models\User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'user',
+        ]);
+
+        // Create 20 random events
+        $events = \App\Models\Event::factory()->count(20)->create();
+
+        // For each event, create some tickets bought by random users
+        $events->each(function ($event) {
+            \App\Models\Ticket::factory()
+                ->count(rand(1, 5))
+                ->create([
+                    'event_id' => $event->id,
+                    'user_id' => \App\Models\User::factory(), // Create a new user for each ticket purchase
+                ]);
+        });
     }
 }

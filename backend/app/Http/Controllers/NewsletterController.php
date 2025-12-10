@@ -24,4 +24,9 @@ class NewsletterController extends Controller
 
         return response()->json(['message' => 'Subscribed successfully']);
     }
+
+    public function index()
+    {
+        return response()->json(NewsletterSubscription::all());
+    }
 }

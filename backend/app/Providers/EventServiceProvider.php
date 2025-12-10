@@ -24,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\TicketPurchased::class => [
             \App\Listeners\GenerateTicketPdfAndEmail::class,
         ],
+        \App\Events\UserRegistered::class => [
+            \App\Listeners\SendWelcomeEmail::class,
+        ],
     ];
 
     /**

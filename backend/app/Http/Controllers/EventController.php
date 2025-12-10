@@ -15,6 +15,11 @@ class EventController extends Controller
         return response()->json(Event::all());
     }
 
+    public function show(Event $event)
+    {
+        return response()->json($event);
+    }
+
     public function store(StoreEventRequest $request)
     {
         $event = Event::create($request->validated());
